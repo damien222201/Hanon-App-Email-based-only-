@@ -1,0 +1,34 @@
+name: Keepalive
+
+# GitHub automatically disables scheduled workflows after 60 days with
+# no commits to the repo (only commits count -- not runs, issues, etc).
+# For a repo you otherwise never touch, this makes a trivial commit
+# every ~30 days so the daily email workflow never silently stops.
+on:
+  schedule:
+    - cron: "0 6 1 * *"   # 06:00 UTC on the 1st of every month
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Touch a marker file and commit if changed
+        run: |
+          mkdir -p .github
+          date -u +"Last keepalive run: %Y-%m-%d %H:%M UTC" > .github/.keepalive
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/.keepalive
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: keepalive (prevent 60-day workflow auto-disable)"
+            git push
+          else
+            echo "Nothing to commit."
+          fi

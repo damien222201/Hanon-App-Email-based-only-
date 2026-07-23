@@ -1,0 +1,42 @@
+name: Daily Catholic Feast Email
+
+# Runs automatically every day, and can also be triggered manually from
+# the Actions tab (useful for testing without waiting for the schedule).
+on:
+  schedule:
+    # Cron is in UTC, and GitHub only guarantees "around" this time, not
+    # to the minute -- see the README for how to pick this for your
+    # timezone. This example fires at 05:00 UTC (06:00 in Lagos/WAT).
+    - cron: "0 5 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send today's feast email
+        env:
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          FROM_NAME: "Catholic Calendar"
+          # SendGrid (leave SENDGRID_API_KEY unset/empty to use SMTP instead)
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          # SMTP (e.g. Gmail with an App Password) -- used if SENDGRID_API_KEY is empty
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          TIMEZONE: "Africa/Lagos"
+          SEND_ON_ORDINARY_DAYS: "false"
+        run: python send_daily_email.py
