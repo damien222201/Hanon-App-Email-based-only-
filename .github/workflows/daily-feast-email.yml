@@ -38,5 +38,5 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           TIMEZONE: "Africa/Lagos"
-          SEND_ON_ORDINARY_DAYS: "false"
+          SEND_ON_ORDINARY_DAYS: "true"
         run: python send_daily_email.py
