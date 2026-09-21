@@ -1,4 +1,5 @@
 # Catholic Calendar — Daily Email (GitHub Actions edition) ✝️
+<img width="1920" height="1080" alt="Screenshot from 2026-09-21 19-05-29" src="https://github.com/user-attachments/assets/909ebda4-d7e1-4634-9572-195ee1ac534e" />
 
 A personal daily email: every day, if it's a Catholic feast day,
 solemnity, or saint's day, you get a message with:
